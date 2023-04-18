@@ -51,13 +51,23 @@
       <v-col cols="1" class="border text-center">1</v-col>
     </v-row>
 
-    <v-row class="mt-4">
-      <!-- sm은 일반 모바일 화면-->
-      <v-col md="12" lg="4" class="border text-center">sm1</v-col>
-      <v-col md="12" lg="4" class="border text-center">sm2</v-col>
-      <v-col md="12" lg="4" class="border text-center">sm3</v-col>
-      <!--12 columns each on middle sized screen, 4 columns each on large sized screen-->
-    </v-row>
+    <h4>반응형 레이아웃</h4>
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12" md="6" lg="3" class="border text-center"
+          >column1</v-col
+        >
+        <v-col cols="12" md="6" lg="3" class="border text-center"
+          >column2</v-col
+        >
+        <v-col cols="12" md="6" lg="3" class="border text-center"
+          >column3</v-col
+        >
+        <v-col cols="12" md="6" lg="3" class="border text-center"
+          >column4</v-col
+        >
+      </v-row>
+    </v-container>
   </v-container>
 </template>
 <script setup></script>
