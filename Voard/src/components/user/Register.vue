@@ -21,19 +21,41 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.uid"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6">
-                    <v-btn color="success">중복확인</v-btn>
+                    <v-btn :loading="false" color="success" @click="btnCheckUid"
+                      >중복확인</v-btn
+                    >
+                    <v-chip
+                      v-if="uidTaken"
+                      class="ma-2"
+                      color="red"
+                      text-color="white"
+                    >
+                      이미 사용 중인 아이디입니다
+                    </v-chip>
+
+                    <v-chip
+                      v-if="uidValid"
+                      class="ma-2"
+                      color="green"
+                      text-color="white"
+                    >
+                      사용 가능한 아이디입니다
+                    </v-chip>
                   </v-col>
                 </v-row>
                 <v-row>
                   <v-col cols="6">
                     <v-text-field
+                      type="password"
                       label="비밀번호 입력"
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.pass1"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6"></v-col>
@@ -41,10 +63,12 @@
                 <v-row>
                   <v-col cols="6">
                     <v-text-field
+                      type="password"
                       label="비밀번호 확인"
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.pass2"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6"></v-col>
@@ -66,6 +90,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.name"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6"> </v-col>
@@ -77,6 +102,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.nick"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6">
@@ -90,6 +116,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.email"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6"></v-col>
@@ -101,6 +128,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.hp"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="6"></v-col>
@@ -112,6 +140,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.zip"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="2">
@@ -126,6 +155,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.addr1"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="2"></v-col>
@@ -137,6 +167,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details="true"
+                      v-model="user.addr2"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="2"></v-col>
@@ -156,14 +187,67 @@
   </v-app>
 </template>
 <script setup>
+import axios from "axios";
+import { ref } from "vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
+const user = reactive({
+  uid: null,
+  pass1: null,
+  pass2: null,
+  name: null,
+  nick: null,
+  email: null,
+  hp: null,
+  zip: null,
+  addr1: null,
+  addr2: null,
+});
+
+const uidTaken = ref(false); // uid 중복인 경우
+const uidValid = ref(false); // uid 사용 가능한 경우 => 두 변수 각각 해당하는 chip에 바인딩
+const loading = ref(false); // checkUid 버튼 로딩 위해
+
+const btnCheckUid = () => {
+  axios
+    .get("http://localhost:8080/Voard/user/countUid", {
+      params: { uid: user.uid },
+    })
+    .then((response) => {
+      setTimeout(() => {
+        loading.value = false;
+
+        if (response.data > 0) {
+          uidTaken.value = true;
+          uidValid.value = false;
+        } else {
+          uidTaken.value = false;
+          uidValid.value = true;
+        }
+      }, 500);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 const btnCancel = () => {
   router.push("/user/login");
 };
+
 const btnRegister = () => {
-  router.push("/list");
+  axios
+    .post("http://localhost:8080/Voard/user/register", user)
+    .then((response) => {
+      console.log(response);
+      router.push("/user/login");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 </script>
 <style scoped></style>

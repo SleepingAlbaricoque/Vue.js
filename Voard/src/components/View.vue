@@ -3,7 +3,7 @@
     <v-app-bar>
       <v-app-bar-title>글보기</v-app-bar-title>
       <p>
-        000님 반갑습니다
+        {{ user?.nick }}님 반갑습니다
         <v-btn>로그아웃</v-btn>
       </p>
     </v-app-bar>
@@ -12,20 +12,25 @@
         <v-sheet max-width="1200" class="mx-auto mt-16">
           <v-container>
             <v-row>
-              <v-col cols="12" md="6" lg="6" class="border">
+              <v-col cols="12" md="3" lg="3" class="border">
                 <v-text-field
-                  label="제목입니다."
-                  variant="outlined"
+                  label="제목"
+                  variant="solo"
                   density="compact"
                   hide-details="true"
+                  readonly
+                  persistent-placeholder
+                  v-if="isMounted"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" md="6" lg="6" class="border">
+              <v-col cols="12" md="9" lg="9" class="border">
                 <v-text-field
                   label="제목입니다."
-                  variant="outlined"
+                  variant="solo"
                   density="compact"
                   hide-details="true"
+                  readonly
+                  persistent-placeholder
                 ></v-text-field
               ></v-col>
             </v-row>
@@ -81,9 +86,14 @@
   </v-app>
 </template>
 <script setup>
+import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 const router = useRouter();
+const userStore = useStore();
+
+const user = computed(() => userStore.getters.user);
 
 const btnList = () => {
   router.push("/list");

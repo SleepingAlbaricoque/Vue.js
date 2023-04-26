@@ -1,11 +1,11 @@
 import { createStore } from "vuex";
 
 const userStore = createStore({
-  staet: {
+  state: {
     user: null,
   },
   mutations: {
-    SET_USER(state) {
+    SET_USER(state, user) {
       state.user = user;
     },
   },
