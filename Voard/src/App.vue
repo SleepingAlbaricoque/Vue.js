@@ -17,7 +17,7 @@ onBeforeMount(() => {
   if (accessToken != null) {
     // 이미 로그인한 정보가 있는 상태 = 로그인한 상태
     axios
-      .get("http://localhost:8080/Voard/user/auth", {
+      .get("http://52.79.139.8:8484/user/auth", {
         headers: { "X-AUTH-TOKEN": accessToken },
       })
       .then((response) => {

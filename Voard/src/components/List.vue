@@ -21,26 +21,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="text-center">1</td>
-                <td class="text-left title" @click="btnView">제목입니다</td>
-                <td class="text-center">김수한무</td>
-                <td class="text-center">12</td>
-                <td class="text-center">23-04-25</td>
-              </tr>
-              <tr>
-                <td class="text-center">1</td>
-                <td class="text-left title" @click="btnView">제목입니다</td>
-                <td class="text-center">김수한무</td>
-                <td class="text-center">12</td>
-                <td class="text-center">23-04-25</td>
-              </tr>
-              <tr>
-                <td class="text-center">1</td>
-                <td class="text-left title" @click="btnView">제목입니다</td>
-                <td class="text-center">김수한무</td>
-                <td class="text-center">12</td>
-                <td class="text-center">23-04-25</td>
+              <tr v-for="(article, index) in state.data.articles">
+                <td class="text-center">{{ state.pageStartNum - index }}</td>
+                <td class="text-left title" @click="btnView">
+                  {{ article.title }}
+                </td>
+                <td class="text-center">{{ article.nick }}</td>
+                <td class="text-center">{{ article.hit }}</td>
+                <td class="text-center">{{ article.rdate }}</td>
               </tr>
             </tbody>
           </v-table>
@@ -48,8 +36,12 @@
             <v-btn color="primary" @click="btnWrite">글쓰기</v-btn>
           </v-sheet>
           <v-pagination
-            :length="100"
+            :length="state.lastPageNum"
             :total-visible="5"
+            v-model="page"
+            @click="pageHandler"
+            @next="pageHandler"
+            @prev="pageHandler"
             rounded="circle"
           ></v-pagination>
         </v-sheet>
@@ -59,14 +51,26 @@
   </v-app>
 </template>
 <script setup>
+import { onBeforeMount } from "vue";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import axios from "axios";
+import { reactive } from "vue";
+import { ref } from "vue";
 
 const router = useRouter();
 const userStore = useStore();
 
 const user = computed(() => userStore.getters.user); // 새로고침하면 store에서 들고 온 정보가 날아가는데, computed를 사용하면 새로고침때마다 자동 감지해서 getters 사용함
+
+const state = reactive({
+  data: {},
+  pageStartNum: 0,
+  lastPageNum: 0,
+});
+
+const page = ref(1);
 
 const btnWrite = () => {
   router.push("/write");
@@ -81,6 +85,28 @@ const btnLogout = () => {
   localStorage.removeItem("accessToken");
   router.push("/user/login");
 };
+
+const pageHandler = () => {
+  getArticles(page.value);
+};
+
+const getArticles = (pg) => {
+  axios
+    .get("http://52.79.139.8:8484/list?pg=" + pg)
+    .then((response) => {
+      console.log(response);
+      state.data = response.data;
+      state.pageStartNum = response.data.pageStartNum;
+      state.lastPageNum = response.data.lastPageNum;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+onBeforeMount(() => {
+  getArticles(1);
+});
 </script>
 <style scoped>
 .title {

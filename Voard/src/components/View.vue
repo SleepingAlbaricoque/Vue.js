@@ -9,44 +9,26 @@
     </v-app-bar>
     <v-main>
       <v-container>
-        <v-sheet max-width="1200" class="mx-auto mt-16">
-          <v-container>
-            <v-row>
-              <v-col cols="12" md="3" lg="3" class="border">
-                <v-text-field
-                  label="제목"
-                  variant="solo"
-                  density="compact"
-                  hide-details="true"
-                  readonly
-                  persistent-placeholder
-                  v-if="isMounted"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" md="9" lg="9" class="border">
-                <v-text-field
-                  label="제목입니다."
-                  variant="solo"
-                  density="compact"
-                  hide-details="true"
-                  readonly
-                  persistent-placeholder
-                ></v-text-field
-              ></v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-textarea
-                  class="pt-6 content"
-                  variant="solo"
-                  readonly
-                  rows="10"
-                  no-resize
-                ></v-textarea>
-              </v-col>
-            </v-row>
-          </v-container>
-          <!--
+        <v-sheet max-width="800" class="mx-auto">
+          <v-text-field
+            label="제목"
+            variant="outlined"
+            v-model="article.title"
+          ></v-text-field>
+          <v-textarea
+            label="내용"
+            variant="outlined"
+            rows="12"
+            v-model="article.content"
+          ></v-textarea>
+          <v-file-input label="파일첨부" variant="outlined"></v-file-input>
+          <v-sheet class="text-right">
+            <v-btn @click="btnList">취소</v-btn>
+            <v-btn color="primary" @click="btnModify" class="ml-2">수정</v-btn>
+          </v-sheet>
+        </v-sheet>
+      </v-container>
+      <!--
           <v-table class="view">
             <tbody>
               <tr>
@@ -73,19 +55,13 @@
             </tbody>
           </v-table>
           -->
-          <v-sheet class="text-right pt-6">
-            <v-btn @click="btnList">목록으로</v-btn>
-            <v-btn class="ml-2" color="primary" @click="btnModify"
-              >수정하기</v-btn
-            >
-          </v-sheet>
-        </v-sheet>
-      </v-container>
     </v-main>
     <v-footer></v-footer>
   </v-app>
 </template>
 <script setup>
+import axios from "axios";
+import { reactive } from "vue";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -94,6 +70,12 @@ const router = useRouter();
 const userStore = useStore();
 
 const user = computed(() => userStore.getters.user);
+
+const article = reactive({
+  title: null,
+  content: null,
+  uid: null,
+});
 
 const btnList = () => {
   router.push("/list");
