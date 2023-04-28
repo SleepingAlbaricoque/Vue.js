@@ -105,7 +105,7 @@ const btnWrite = () => {
   article.uid = userStore.getters.user.uid;
 
   axios
-    .post("http://52.79.139.8:8484/write", article)
+    .post("/api/write", article)
     .then((response) => {
       console.log(response);
 

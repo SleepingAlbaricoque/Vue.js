@@ -22,3 +22,7 @@ registerPlugins(app);
 app.use(router);
 app.use(userStore);
 app.mount("#app");
+
+// axios 전역 설정
+//axios.defaults.baseURL = "http://localhost:8484"; // dev
+axios.defaults.baseURL = "http://52.79.139.8:8484"; // dist

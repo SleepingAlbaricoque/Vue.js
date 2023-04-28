@@ -92,7 +92,7 @@ const pageHandler = () => {
 
 const getArticles = (pg) => {
   axios
-    .get("http://52.79.139.8:8484/list?pg=" + pg)
+    .get("/api/list?pg=" + pg)
     .then((response) => {
       console.log(response);
       state.data = response.data;

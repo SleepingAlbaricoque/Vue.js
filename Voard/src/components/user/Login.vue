@@ -70,7 +70,7 @@ const btnRegister = () => {
 };
 const btnLogin = () => {
   axios
-    .post("http://52.79.139.8:8484/user/login", user)
+    .post("/api/user/login", user)
     .then((response) => {
       console.log(response);
 

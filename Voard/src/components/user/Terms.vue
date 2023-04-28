@@ -72,7 +72,7 @@ const btnRegister = () => {
 
 onBeforeMount(() => {
   axios
-    .get("http://52.79.139.8:8484/user/terms")
+    .get("/api/user/terms")
     .then((response) => {
       console.log(response);
       state.data = response.data;
